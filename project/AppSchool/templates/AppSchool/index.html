@@ -1,0 +1,21 @@
+{% extends "AppSchool/layout.html" %} {% load static %}
+<!-- Title -->
+{% block title %} Home {% endblock title %}
+
+<!-- Section -->
+{% block section%}
+
+<section class="homepage">
+  <div class="homecontainer">
+    <h1 class="hometitle">
+      Welcome <br />
+      <span class="hometitle_span">to your School App!</span>
+    </h1>
+    <img
+      class="home_img"
+      src="{% static 'AppSchool/assets/img/580.jpg' %}"
+      alt="School App"
+    />
+  </div>
+</section>
+{% endblock %}

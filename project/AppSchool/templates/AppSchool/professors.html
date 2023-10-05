@@ -1,0 +1,22 @@
+{% extends "AppSchool/layout.html" %} {% load static %}
+<!-- Title -->
+{% block title %} Professors {% endblock title %}
+
+<!-- Section -->
+{% block section%}
+<section class="page">
+  <div class="container">
+    <div class="title_container">
+      <h3 class="subtitle">Professors</h3>
+    </div>
+    {% if db %} {% for item in db %}
+    <div class="list_container">
+      <p class="text text-left"><b>Name:</b> {{item.name}}</p>
+      <p class="text text-left"><b>Course:</b> {{item.course}}</p>
+    </div>
+    {% endfor %} {% endif %}
+
+    <a class="button" href="{% url 'Form' %}">Add Professor</a>
+  </div>
+</section>
+{% endblock %}
