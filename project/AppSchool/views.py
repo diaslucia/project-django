@@ -2,8 +2,6 @@ from django.shortcuts import render
 from .models import Course, Student, Professor
 from .forms import CourseClass, SearchClass, StudentClass, ProfessorClass
 
-# Create your views here.
-
 
 def home(request):
     return render(request, "AppSchool/index.html")
@@ -17,7 +15,11 @@ def formCourse(request):
             info = myForm.cleaned_data
             courseInfo = Course(name=info["name"], course=info["course"])
             courseInfo.save()
-            return render(request, "AppSchool/courses.html")
+            return render(
+                request,
+                "AppSchool/courses.html",
+                {"myForm": myForm, "db": Course.objects.all()},
+            )
     else:
         myForm = CourseClass()
 
@@ -34,7 +36,11 @@ def formStudent(request):
                 name=info["name"], lastName=info["lastName"], email=info["email"]
             )
             courseInfo.save()
-            return render(request, "AppSchool/students.html")
+            return render(
+                request,
+                "AppSchool/students.html",
+                {"db": Student.objects.all()},
+            )
     else:
         myForm = StudentClass()
 
@@ -51,7 +57,11 @@ def formProfessor(request):
                 name=info["name"], lastName=info["lastName"], email=info["email"]
             )
             courseInfo.save()
-            return render(request, "AppSchool/professors.html")
+            return render(
+                request,
+                "AppSchool/professors.html",
+                {"db": Professor.objects.all()},
+            )
     else:
         myForm = ProfessorClass()
 
