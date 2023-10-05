@@ -1,0 +1,19 @@
+{% extends "AppSchool/layout.html" %} {% load static %}
+<!-- Title -->
+{% block title %} Form Professor {% endblock title %}
+
+<!-- Section -->
+{% block section%}
+<section class="page">
+  <div class="container">
+    <form action="" method="POST">
+      {% csrf_token %}
+      <table>
+        {{myForm.as_table}}
+      </table>
+      <input type="submit" value="Save" />
+    </form>
+  </div>
+</section>
+
+{% endblock %}

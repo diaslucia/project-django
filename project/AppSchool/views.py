@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from .models import Course, Student, Professor
-from .forms import CourseClass, SearchClass
+from .forms import CourseClass, SearchClass, StudentClass, ProfessorClass
 
 # Create your views here.
 
@@ -9,7 +9,7 @@ def home(request):
     return render(request, "AppSchool/index.html")
 
 
-def form(request):
+def formCourse(request):
     if request.method == "POST":
         myForm = CourseClass(request.POST)
 
@@ -17,11 +17,45 @@ def form(request):
             info = myForm.cleaned_data
             courseInfo = Course(name=info["name"], course=info["course"])
             courseInfo.save()
-            return render(request, "AppSchool/index.html")
+            return render(request, "AppSchool/courses.html")
     else:
         myForm = CourseClass()
 
-    return render(request, "AppSchool/form.html", {"myForm": myForm})
+    return render(request, "AppSchool/formCourse.html", {"myForm": myForm})
+
+
+def formStudent(request):
+    if request.method == "POST":
+        myForm = StudentClass(request.POST)
+
+        if myForm.is_valid():
+            info = myForm.cleaned_data
+            courseInfo = Student(
+                name=info["name"], lastName=info["lastName"], email=info["email"]
+            )
+            courseInfo.save()
+            return render(request, "AppSchool/students.html")
+    else:
+        myForm = StudentClass()
+
+    return render(request, "AppSchool/formStudent.html", {"myForm": myForm})
+
+
+def formProfessor(request):
+    if request.method == "POST":
+        myForm = ProfessorClass(request.POST)
+
+        if myForm.is_valid():
+            info = myForm.cleaned_data
+            courseInfo = Professor(
+                name=info["name"], lastName=info["lastName"], email=info["email"]
+            )
+            courseInfo.save()
+            return render(request, "AppSchool/professors.html")
+    else:
+        myForm = ProfessorClass()
+
+    return render(request, "AppSchool/formProfessor.html", {"myForm": myForm})
 
 
 def courses(request):
