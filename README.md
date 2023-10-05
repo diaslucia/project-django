@@ -1,6 +1,6 @@
 <br />
 
-### APPSchool
+# APPSchool
 
 ## 🔎 About
 
