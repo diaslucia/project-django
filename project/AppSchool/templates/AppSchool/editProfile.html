@@ -1,0 +1,14 @@
+<!-- Title -->
+{% block title %} Edit Profile {% endblock title %}
+
+<!-- Section -->
+{% block section%}
+<p>{{message}}</p>
+
+<form action="" method="POST">
+  {% csrf_token %} {{myForm.as_p}}
+
+  <button type="submit">Edit</button>
+</form>
+
+{% endblock %}

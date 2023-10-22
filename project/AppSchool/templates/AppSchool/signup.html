@@ -1,0 +1,12 @@
+<!-- Title -->
+{% block title %} SignIn {% endblock title %}
+
+<!-- Section -->
+{% block section%}
+
+<form action="" method="POST">
+  {% csrf_token %} {{form.as_p}}
+  <button type="submit">SignIn</button>
+</form>
+
+{% endblock %}

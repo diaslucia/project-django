@@ -1,8 +1,18 @@
 from django.shortcuts import render
 from .models import Course, Student, Professor
-from .forms import CourseClass, SearchClass, StudentClass, ProfessorClass
+from .forms import CourseClass, SearchClass, StudentClass, ProfessorClass, UserEditForm
+from django.contrib.auth.decorators import login_required
+from .models import Avatar
+from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
+from django.contrib.auth import login, logout, authenticate
+from .forms import UserRegisterForm
+
+""" Classes """
+from django.views.generic.detail import DetailView
+from django.views.generic import ListView
 
 
+@login_required
 def home(request):
     return render(request, "AppSchool/index.html")
 
@@ -26,44 +36,82 @@ def formCourse(request):
     return render(request, "AppSchool/formCourse.html", {"myForm": myForm})
 
 
-def formStudent(request):
+def formStudent(request, id=None):
     if request.method == "POST":
         myForm = StudentClass(request.POST)
 
         if myForm.is_valid():
             info = myForm.cleaned_data
-            courseInfo = Student(
-                name=info["name"], lastName=info["lastName"], email=info["email"]
-            )
-            courseInfo.save()
+
+            if id:
+                getStudent = Student.objects.get(id=id)
+                getStudent.name = info["name"]
+                getStudent.lastName = info["lastName"]
+                getStudent.email = info["email"]
+                getStudent.save()
+            else:
+                courseInfo = Student(
+                    name=info["name"], lastName=info["lastName"], email=info["email"]
+                )
+                courseInfo.save()
+
             return render(
                 request,
                 "AppSchool/students.html",
                 {"db": Student.objects.all()},
             )
     else:
-        myForm = StudentClass()
+        if id:
+            getStudent = Student.objects.get(id=id)
+            myForm = StudentClass(
+                initial={
+                    "name": getStudent.name,
+                    "lastName": getStudent.lastName,
+                    "email": getStudent.email,
+                }
+            )
+        else:
+            myForm = StudentClass()
 
     return render(request, "AppSchool/formStudent.html", {"myForm": myForm})
 
 
-def formProfessor(request):
+def formProfessor(request, id=None):
     if request.method == "POST":
         myForm = ProfessorClass(request.POST)
 
         if myForm.is_valid():
             info = myForm.cleaned_data
-            courseInfo = Professor(
-                name=info["name"], lastName=info["lastName"], email=info["email"]
-            )
-            courseInfo.save()
+
+            if id:
+                getProfessor = Professor.objects.get(id=id)
+                getProfessor.name = info["name"]
+                getProfessor.lastName = info["lastName"]
+                getProfessor.email = info["email"]
+                getProfessor.save()
+            else:
+                courseInfo = Professor(
+                    name=info["name"], lastName=info["lastName"], email=info["email"]
+                )
+                courseInfo.save()
+
             return render(
                 request,
                 "AppSchool/professors.html",
                 {"db": Professor.objects.all()},
             )
     else:
-        myForm = ProfessorClass()
+        if id:
+            getProfessor = Professor.objects.get(id=id)
+            myForm = ProfessorClass(
+                initial={
+                    "name": getProfessor.name,
+                    "lastName": getProfessor.lastName,
+                    "email": getProfessor.email,
+                }
+            )
+        else:
+            myForm = ProfessorClass()
 
     return render(request, "AppSchool/formProfessor.html", {"myForm": myForm})
 
@@ -88,7 +136,11 @@ def courses(request):
     )
 
 
-def students(request):
+def students(request, id=None):
+    if id:
+        findItem = Student.objects.get(id=int(id))
+        findItem.delete()
+
     return render(
         request,
         "AppSchool/students.html",
@@ -96,9 +148,129 @@ def students(request):
     )
 
 
-def professors(request):
+def professors(request, id=None):
+    if id:
+        findItem = Professor.objects.get(id=int(id))
+        findItem.delete()
+
     return render(
         request,
         "AppSchool/professors.html",
         {"db": Professor.objects.all()},
     )
+
+
+""" User """
+
+
+def login_req(request):
+    if request.method == "POST":
+        form = AuthenticationForm(request, data=request.POST)
+
+        if form.is_valid():
+            user = form.cleaned_data.get("username")
+            passw = form.cleaned_data.get("password")
+            user_name = authenticate(username=user, password=passw)
+
+            if user is not None:
+                login(request, user_name)
+                return render(request, "AppSchool/index.html")
+            else:
+                form = AuthenticationForm()
+                return render(
+                    request,
+                    "AppSchool/login.html",
+                    {"message": "Credencials incorrect", "form": form},
+                )
+        else:
+            return render(request, "AppSchool/index.html")
+    form = AuthenticationForm()
+    return render(
+        request,
+        "AppSchool/login.html",
+        {"form": form},
+    )
+
+
+def signup(request):
+    if request.method == "POST":
+        # form = UserCreationForm(request.POST)
+        form = UserRegisterForm(request.POST)
+
+        if form.is_valid():
+            user = form.cleaned_data["username"]
+            form.save()
+            return render(
+                request,
+                "AppSchool/index.html",
+                {"message": "User added"},
+            )
+
+    else:
+        # form = UserCreationForm()
+        form = UserRegisterForm()
+
+    return render(
+        request,
+        "AppSchool/signup.html",
+        {"form": form},
+    )
+
+
+""" @login_required """
+
+
+def editProfile(request):
+    user = request.user
+
+    if request.method == "POST":
+        myForm = UserEditForm(request.POST, request.FILES)
+
+        if myForm.is_valid():
+            formData = myForm.cleaned_data
+
+            if formData["password1"] != formData["password2"]:
+                datos = {"first_name": user.first_name, "email": user.email}
+                myForm = UserEditForm(initial=datos)
+
+            else:
+                user.email = formData["email"]
+                if formData["password1"]:
+                    user.set_password(formData["password1"])
+                user.last_name = formData["last_name"]
+                user.first_name = formData["first_name"]
+                user.save()
+
+                # New avatar for user
+                try:
+                    avatarUser = Avatar.objects.get(user=user)
+                except Avatar.DoesNotExist:
+                    avatarUser = Avatar(user=user, avatar=formData["avatar"])
+                    avatarUser.save()
+                else:
+                    avatarUser.avatar = formData["avatar"]
+                    avatarUser.save()
+
+                return render(request, "AppSchool/index.html")
+
+    else:
+        data = {"first_name": user.first_name, "email": user.email}
+        myForm = UserEditForm(initial=data)
+
+    return render(
+        request, "AppSchool/editProfile.html", {"myForm": myForm, "user": user}
+    )
+
+
+##################
+
+
+""" class CourseListView(ListView):
+    model = Course
+    template_name = "AppCoder/courses.html"
+
+
+class CourseDetail(DetailView):
+    model = Course
+    template_name = "AppCoder/course_detail.html"
+ """

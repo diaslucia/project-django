@@ -1,0 +1,13 @@
+<!-- Title -->
+{% block title %} Login {% endblock title %}
+
+<!-- Section -->
+{% block section%}
+<p>{{message}}</p>
+
+<form action="" method="POST">
+  {% csrf_token %} {{form.as_p}}
+  <button type="submit">Login</button>
+</form>
+
+{% endblock %}

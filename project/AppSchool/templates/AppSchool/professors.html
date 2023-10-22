@@ -11,9 +11,15 @@
     </div>
     {% if db %} {% for item in db %}
     <div class="list_container">
-      <p class="text text-left"><b>Name:</b> {{item.name}}</p>
-      <p class="text text-left"><b>Last Name:</b> {{item.lastName}}</p>
-      <p class="text text-left"><b>Email:</b> {{item.email}}</p>
+      <div class="group_container">
+        <p class="text text-left"><b>Name:</b> {{item.name}}</p>
+        <p class="text text-left"><b>Last Name:</b> {{item.lastName}}</p>
+        <p class="text text-left"><b>Email:</b> {{item.email}}</p>
+      </div>
+      <div class="group_container">
+        <a href="{% url 'Professors' item.id %}">Delete</a>
+        <a href="{% url 'FormProfessor' item.id %}">Edit</a>
+      </div>
     </div>
     {% endfor %} {% endif %}
 
