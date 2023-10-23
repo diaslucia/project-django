@@ -36,6 +36,9 @@
 
       <ul class="nav_list">
         <li class="nav_item">
+          <a class="nav_link" href="{% url 'About' %}">About</a>
+        </li>
+        <li class="nav_item">
           <a class="nav_link" href="{% url 'Courses' %}">Courses</a>
         </li>
         <li class="nav_item">
@@ -46,14 +49,20 @@
         </li>
         {% if request.user.is_authenticated %}
         <li class="nav_item">
+          <div class="user_container">
+            {% if avatarUser %}
+            <img width="40px" src="{{avatarUser}}" />
+            {% endif %}
+            <p class="nav_name">Hola {{user.username}}!</p>
+          </div>
+        </li>
+        <li class="nav_item">
           <a class="nav_link" href="{% url 'EditProfile' %}">Edit Profile</a>
         </li>
         <li class="nav_item">
-          {% if avatarUser %}
-          <img width="40px" src="{{avatarUser}}" />
-          {% endif %}
           <a class="nav_link" href="{% url 'Logout' %}">Logout</a>
         </li>
+
         {% else %}
         <li class="nav_item">
           <a class="nav_link" href="{% url 'Login' %}">Login</a>

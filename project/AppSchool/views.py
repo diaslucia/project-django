@@ -4,19 +4,17 @@ from .forms import CourseClass, SearchClass, StudentClass, ProfessorClass, UserE
 from django.contrib.auth.decorators import login_required
 from .models import Avatar
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
-from django.contrib.auth import login, logout, authenticate
+from django.contrib.auth import login, authenticate
 from .forms import UserRegisterForm
-
-""" Classes """
-from django.views.generic.detail import DetailView
-from django.views.generic import ListView
+from django.contrib.admin.views.decorators import staff_member_required
 
 
-@login_required
 def home(request):
     return render(request, "AppSchool/index.html")
 
 
+@login_required
+@staff_member_required
 def formCourse(request):
     if request.method == "POST":
         myForm = CourseClass(request.POST)
@@ -36,6 +34,8 @@ def formCourse(request):
     return render(request, "AppSchool/formCourse.html", {"myForm": myForm})
 
 
+@login_required
+@staff_member_required
 def formStudent(request, id=None):
     if request.method == "POST":
         myForm = StudentClass(request.POST)
@@ -76,6 +76,7 @@ def formStudent(request, id=None):
     return render(request, "AppSchool/formStudent.html", {"myForm": myForm})
 
 
+@staff_member_required
 def formProfessor(request, id=None):
     if request.method == "POST":
         myForm = ProfessorClass(request.POST)
@@ -194,7 +195,6 @@ def login_req(request):
 
 def signup(request):
     if request.method == "POST":
-        # form = UserCreationForm(request.POST)
         form = UserRegisterForm(request.POST)
 
         if form.is_valid():
@@ -207,7 +207,6 @@ def signup(request):
             )
 
     else:
-        # form = UserCreationForm()
         form = UserRegisterForm()
 
     return render(
@@ -217,9 +216,7 @@ def signup(request):
     )
 
 
-""" @login_required """
-
-
+@staff_member_required
 def editProfile(request):
     user = request.user
 
@@ -260,17 +257,3 @@ def editProfile(request):
     return render(
         request, "AppSchool/editProfile.html", {"myForm": myForm, "user": user}
     )
-
-
-##################
-
-
-""" class CourseListView(ListView):
-    model = Course
-    template_name = "AppCoder/courses.html"
-
-
-class CourseDetail(DetailView):
-    model = Course
-    template_name = "AppCoder/course_detail.html"
- """

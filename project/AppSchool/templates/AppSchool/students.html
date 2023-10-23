@@ -16,10 +16,12 @@
         <p class="text text-left"><b>Last Name:</b> {{item.lastName}}</p>
         <p class="text text-left"><b>Email:</b> {{item.email}}</p>
       </div>
-      <div class="group_container">
+      {% if request.user.is_superuser %}
+      <div class="rigth_container">
         <a href="{% url 'Students' item.id %}">Delete</a>
         <a href="{% url 'FormStudent' item.id %}">Edit</a>
       </div>
+      {% endif %}
     </div>
     {% endfor %} {% endif %}
 

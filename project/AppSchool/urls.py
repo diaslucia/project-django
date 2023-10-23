@@ -12,14 +12,21 @@ from .views import (
     signup,
     editProfile,
 )
+from .views_classes import About, ProfessorDetailView
 
 urlpatterns = [
     path("", home, name="Home"),
+    path("about", About.as_view(), name="About"),
     path("courses", courses, name="Courses"),
     path("students", students, name="Students"),
     path("students/<int:id>", students, name="Students"),
     path("professors", professors, name="Professors"),
     path("professors/<int:id>", professors, name="Professors"),
+    path(
+        "professorDetail/<int:pk>/",
+        ProfessorDetailView.as_view(),
+        name="ProfessorDetail",
+    ),
 ]
 
 urlpatterns += [
