@@ -43,6 +43,10 @@ Steps to install and run the project:
 - AppSchool/formStudent: to add a new student
 - AppSchool/professors: to access the list of all professors
 - AppSchool/formProfessor: to add a new professor
+- AppSchool/login: to login
+- AppSchool/signup: to create a new account
+- AppSchool/logout: to logout
+- AppSchool/editProfile: to edit your profile information
 
 ## 📂 Structure
 
@@ -62,6 +66,9 @@ The file structure is:
 - courses: Displays courses with a search form.
 - students: Displays all students.
 - professors: Displays all professors.
+- login_req: Displays a form to log in into your account.
+- signup: Displays a form to create a new user.
+- editProfile: Displays a form to edit your profile information.
 
 ### Urls File
 
